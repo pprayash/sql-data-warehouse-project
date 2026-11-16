@@ -81,15 +81,30 @@ flowchart LR
 
 ---
 
-## 4. Execution Roadmap & Checklist
+## 4. Data Quality & Testing Strategy
+*(To be populated as tests are written in the testing scripts)*
 
-### Phase 1: Project Planning & Discovery
+---
+
+## 5. Risks & Mitigations
+| Risk | Impact | Mitigation Strategy |
+| :--- | :--- | :--- |
+| Schema changes in source CSVs | High | Bronze tables use loose `VARCHAR` types to prevent ingestion crashes. |
+| Pipeline executed twice causes duplicate rows | High | Use `TRUNCATE TABLE` or `MERGE` statements inside stored procedures to ensure idempotency. |
+
+---
+
+## 6. Execution Roadmap & Checklist
+
+### Phase 1: Project Planning & Architecture
 - [x] Initialize Git repository and GitHub remote.
 - [x] Create project directory structure (`datasets/`, `sql/`, `tests/`, `docs/`).
 - [x] Inspect raw CRM & ERP datasets (identify grain, keys, and volumes).
 - [x] Formulate core business questions & KPIs.
 - [x] Define naming conventions and transformation rules.
 - [x] Document the master project plan (`docs/project_plan.md`).
+- [x] Design high-level Medallion Architecture diagram in Draw.io.
+- [x] Save architecture & schema diagrams into `docs/diagrams/`.
 
 ### Phase 2: Environment & Database Setup
 - [x] Install / Connect to SQL Database (PostgreSQL).
@@ -115,20 +130,11 @@ flowchart LR
 - [ ] Create analytical reporting views.
 
 ### Phase 6: Testing & Acceptance Criteria
-- [ ] **Uniqueness Test**: Zero duplicate primary keys in dimension tables.
-- [ ] **Referential Integrity**: 100% of foreign keys in `fact_sales` link to valid dimensions.
-- [ ] **Reconciliation**: Total revenue in `fact_sales` matches raw source files.
-- [ ] **Business Verification**: Execute queries answering the 3 core business questions.
-
----
-
-## 5. Data Quality & Testing Strategy
-*(To be populated as tests are written in the testing scripts)*
-
----
-
-## 6. Risks & Mitigations
-| Risk | Impact | Mitigation Strategy |
-| :--- | :--- | :--- |
-| Schema changes in source CSVs | High | Bronze tables use loose `VARCHAR` types to prevent ingestion crashes. |
-| Pipeline executed twice causes duplicate rows | High | Use `TRUNCATE TABLE` or `MERGE` statements inside stored procedures to ensure idempotency. |
+- [ ] **Uniqueness Test**
+- [ ] **Referential Integrity Test**
+- [ ] **Completeness (Nullability) Test**
+- [ ] **Validity (Domain Constraints) Test**
+- [ ] **Sanity & Boundary Test**
+- [ ] **Chronological Consistency Test**
+- [ ] **Reconciliation Test**
+- [ ] **Business Verification**
