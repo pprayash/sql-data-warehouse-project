@@ -108,8 +108,8 @@ flowchart LR
 
 ### Phase 2: Environment & Database Setup
 - [x] Install / Connect to SQL Database (PostgreSQL).
-- [ ] Write script to initialize the database and schemas (`bronze`, `silver`, `gold`).
-- [ ] Configure database users, permissions, and connections.
+- [x] Write script to initialize the database and schemas (`bronze`, `silver`, `gold`).
+- [x] Configure database users, permissions, and connections.
 
 ### Phase 3: Bronze Layer (Raw Ingestion)
 - [ ] Write DDL scripts for raw staging tables (`sql/02_bronze/ddl_bronze.sql`).
