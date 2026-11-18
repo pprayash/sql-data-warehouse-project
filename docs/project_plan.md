@@ -112,9 +112,10 @@ flowchart LR
 - [x] Configure database users, permissions, and connections.
 
 ### Phase 3: Bronze Layer (Raw Ingestion)
-- [ ] Write DDL scripts for raw staging tables (`sql/02_bronze/ddl_bronze.sql`).
-- [ ] Write bulk-load stored procedure (`sql/02_bronze/proc_load_bronze.sql`).
-- [ ] Verify raw row counts match CSV files.
+- [x] Write DDL scripts for raw staging tables (`sql/02_bronze/ddl_bronze.sql`).
+- [x] Write bulk-load stored procedure (`sql/02_bronze/proc_load_bronze.sql`).
+- [x] Verify raw row counts match CSV files.
+- [x] Design detailed Data Flow diagram of bronze layer in Draw.io.
 
 ### Phase 4: Silver Layer (Transformation & Cleansing)
 - [ ] Profile Bronze tables and log dirty data issues in section 2.3.
