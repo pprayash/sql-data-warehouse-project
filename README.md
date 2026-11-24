@@ -243,4 +243,4 @@ data-warehouse-project-sql/
 
 ## 👤 Author
 **Prayash Sapkota**  
-*Data Engineering Portfolio Project*
+*Data Engineering Project*
