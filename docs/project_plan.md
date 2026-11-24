@@ -1,7 +1,7 @@
 # 📋 Project Plan: SQL Data Warehouse (Sales & Customer Analytics)
 
 - **Author**: Prayash Sapkota
-- **Status**: In Progress
+- **Status**: Completed
 - **Architecture**: Medallion (Bronze → Silver → Gold)
 - **Tech Stack**: SQL (PostgreSQL), Git, GitHub
 
