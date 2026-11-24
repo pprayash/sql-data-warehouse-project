@@ -153,17 +153,18 @@ All 6 Silver tables have undergone automated testing via `tests/quality_checks_s
 - [x] Design detailed Data Flow diagram of silver layer in Draw.io (`docs/diagrams/Data-Flow-Diagram.drawio.png`).
 
 ### Phase 5: Gold Layer (Dimensional Modeling & Analytics)
-- [ ] Design dimensional models following Kimball Star Schema methodology.
-- [ ] Implement surrogate key generation for dimension tables.
-- [ ] Build conformed dimension tables consolidating attributes across sources.
-- [ ] Build centralized fact tables with foreign key relationships and metrics.
-- [ ] Create analytical reporting views.
+- [x] Design dimensional Star Schema model following Kimball methodology (1 Fact, 2 Dimensions).
+- [x] Generate surrogate primary keys (`customer_key`, `product_key`) using `ROW_NUMBER()`.
+- [x] Build Customer Dimension view (`gold.dim_customers`) integrating profiles, demographics, and geography.
+- [x] Build Product Dimension view (`gold.dim_products`) with category hierarchy and active catalog filter (`prd_end_dt IS NULL`).
+- [x] Build Central Fact Sales view (`gold.fact_sales`) referencing surrogate keys (`customer_key`, `product_key`) with order metrics.
+- [x] Author technical documentation and catalog (`docs/naming_convention.md`, `docs/data_catalog.md`).
 
 ### Phase 6: Testing & Acceptance Criteria
-- [ ] Uniqueness Test (primary keys and grain integrity).
-- [ ] Completeness Test (nullability constraints on critical keys).
-- [ ] Referential Integrity Test (foreign keys and cross-table linkages).
-- [ ] Domain Validity Test (standardized categories and status flags).
-- [ ] Sanity & Business Math Test (calculation consistency and positive bounds).
-- [ ] Chronological Consistency Test (temporal event ordering).
-- [ ] Pipeline Idempotency Test (repeatable executions without data inflation).
+- [x] Uniqueness Test (verified 0 duplicate keys across all dimensions and composite fact grain).
+- [x] Completeness Test (verified 0 null/blank keys across all mandatory join identifiers).
+- [x] Referential Integrity Test (100% match rate between `fact_sales` and dimension surrogate keys).
+- [x] Domain Validity Test (standardized categories, gender, country names, and maintenance flags).
+- [x] Sanity & Business Math Test (100% mathematical consistency on sales totals: Sales = Quantity × Price).
+- [x] Chronological Consistency Test (order date precedes shipping and delivery milestones; valid birthdates).
+- [x] Pipeline Idempotency Test (verified repeatable procedure executions with deterministic row counts).
