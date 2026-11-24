@@ -91,15 +91,15 @@ A comprehensive quality assurance framework is implemented across the pipeline. 
 
 ### 4.1 Testing Dimensions & Framework
 
-| Testing Dimension | Objective | Implementation Scope (Silver Layer) | Acceptance Target |
+| Testing Dimension | Objective | Implementation Scope (Silver & Gold Layers) | Acceptance Target |
 | :--- | :--- | :--- | :---: |
-| **Uniqueness & Grain** | Verify primary keys and composite grains uniquely identify records with zero duplicate entries. | Partitioned deduplication on customer IDs, product IDs, category IDs, and sales transaction line items. | 0 duplicates |
-| **Completeness & Nullability** | Ensure mandatory business keys and critical attributes contain no missing or empty values. | Null and blank string validation on primary keys, order numbers, and join attributes across all tables. | 0 null/blank keys |
-| **Referential Integrity** | Validate entity resolution and foreign key linkages between operational systems (CRM & ERP). | Cross-source reconciliation between CRM customer profiles, ERP demographics, and ERP location records. | 100% key match |
-| **Domain Validity & Standardization** | Enforce unified taxonomies across demographic, geographic, and status attributes. | Standardization of gender codes, marital statuses, country naming conventions, and maintenance indicators. | 0 unmapped values |
-| **Sanity & Business Math** | Guarantee mathematical consistency and positive numeric ranges for financial calculations. | Validation that transaction sales totals equal quantity multiplied by unit price; non-negative cost and price constraints. | 0 math violations |
+| **Uniqueness & Grain** | Verify primary keys, surrogate keys, and composite grains uniquely identify records with zero duplicate entries. | Partitioned deduplication on IDs in Silver; unique surrogate keys (`customer_key`, `product_key`) and composite grains in Gold. | 0 duplicates |
+| **Completeness & Nullability** | Ensure mandatory business keys, foreign keys, and critical attributes contain no missing or empty values. | Null and blank string checks in Silver; zero nulls on surrogate foreign keys in `gold.fact_sales`. | 0 null/blank keys |
+| **Referential Integrity** | Validate entity resolution and foreign key linkages between operational systems (CRM & ERP) and star schema tables. | Cross-source reconciliation in Silver; 100% key match between `fact_sales` and dimension views (`dim_customers`, `dim_products`). | 100% key match (0 orphans) |
+| **Domain Validity & Standardization** | Enforce unified taxonomies across demographic, geographic, and status attributes. | Standardization of gender codes, marital statuses, country naming conventions, and maintenance indicators across Silver and Gold. | 0 unmapped values |
+| **Sanity & Business Math** | Guarantee mathematical consistency and positive numeric ranges for financial calculations. | Validation that transaction sales totals equal quantity multiplied by unit price (`Sales = Quantity * Price`); non-negative cost and price constraints. | 0 math violations |
 | **Chronological Consistency** | Verify temporal integrity across business event lifecycles. | Chronological validation ensuring order dates precede or equal ship and due dates; plausible birthdate ranges. | 0 chronological errors |
-| **Pipeline Idempotency** | Guarantee automated reload pipelines execute deterministically without row inflation. | Transaction-safe truncation and execution duration logging in stored procedures (`load_bronze`, `load_silver`). | Deterministic row counts |
+| **Pipeline Idempotency** | Guarantee automated reload pipelines execute deterministically without row inflation. | Transaction-safe truncation and execution logging in stored procedures (`load_bronze`, `load_silver`); real-time view reflection in Gold. | Deterministic row counts |
 
 ### 4.2 Silver Layer Validation Results
 All 6 Silver tables have undergone automated testing via `tests/quality_checks_silver.sql` and achieved full compliance:
@@ -109,6 +109,21 @@ All 6 Silver tables have undergone automated testing via `tests/quality_checks_s
 - **`silver.erp_cust_az12`**: 18,484 rows validated; source identifier prefixes stripped; future/corrupt birthdates nulled; standardized gender.
 - **`silver.erp_loc_a101`**: 18,484 rows validated; source formatting resolved; country names standardized with 100% CRM key alignment.
 - **`silver.erp_px_cat_g1v2`**: 37 rows validated; category and subcategory hierarchies validated; maintenance flags normalized.
+
+### 4.3 Gold Layer Validation Results
+All 3 Gold presentation models have undergone automated validation via `tests/quality_checks_gold.sql` and confirmed 100% Star Schema integrity:
+- **`gold.dim_customers`**: 
+  - Verified 0 duplicate keys on multi-table join (`cst_id` aggregation returned 0 rows with count > 1).
+  - Resolved cross-system gender inconsistencies between CRM and ERP, successfully mapping over 4,500 unknown customer genders down to just 15 across the entire warehouse.
+  - Confirmed 18,484 clean records with standardized domain values (`'Male'`, `'Female'`, `'n/a'`).
+- **`gold.dim_products`**: 
+  - Verified 0 duplicate keys on catalog and category join (`prd_key` aggregation returned 0 rows with count > 1).
+  - Verified SCD Type 1 active catalog filter (`WHERE prd_end_dt IS NULL`), yielding exactly 295 unique, active products.
+  - Confirmed complete integration with category and subcategory hierarchies with zero Cartesian row inflation.
+- **`gold.fact_sales`**: 
+  - **100% Referential Integrity**: Verified zero orphaned sales transactions (0 rows with null `customer_key` or `product_key` when left-joined to dimensions).
+  - Confirmed all 60,398 line items resolve to valid surrogate keys.
+  - Verified mathematical invariance on all records (`sales_amount = quantity * price`).
 
 ---
 
@@ -141,24 +156,25 @@ All 6 Silver tables have undergone automated testing via `tests/quality_checks_s
 - [x] Write DDL scripts for raw staging tables (`sql/bronze/ddl_bronze.sql`).
 - [x] Write bulk-load stored procedure (`sql/bronze/proc_load_bronze.sql`).
 - [x] Verify raw row counts match CSV source files.
-- [x] Design detailed Data Flow diagram of bronze layer in Draw.io (`docs/diagrams/Data-Flow-Diagram.drawio.png`).
+- [x] Design detailed Data Flow diagram in Draw.io (`docs/diagrams/Data-Flow.drawio.png`).
 
 ### Phase 4: Silver Layer (Transformation & Cleansing)
-- [x] Design Data Integration Diagram in Draw.io (`docs/diagrams/Data-Integration-Diagram.drawio.png`).
+- [x] Design Data Integration Diagram in Draw.io (`docs/diagrams/Data-Integration-Diagram.jpg`).
 - [x] Profile Bronze tables and establish data cleansing rules.
 - [x] Write DDL scripts for silver tables (`sql/silver/ddl_silver.sql`).
 - [x] Implement transformation, standardization, and deduplication logic.
 - [x] Write stored procedure to populate silver layer (`sql/silver/proc_load_silver.sql`).
 - [x] Create automated data quality validation suite (`tests/quality_checks_silver.sql`).
-- [x] Design detailed Data Flow diagram of silver layer in Draw.io (`docs/diagrams/Data-Flow-Diagram.drawio.png`).
 
 ### Phase 5: Gold Layer (Dimensional Modeling & Analytics)
+- [x] Design Star Schema Data Model diagram in Draw.io (`docs/diagrams/Data-Model.drawio.png`).
 - [x] Design dimensional Star Schema model following Kimball methodology (1 Fact, 2 Dimensions).
 - [x] Generate surrogate primary keys (`customer_key`, `product_key`) using `ROW_NUMBER()`.
 - [x] Build Customer Dimension view (`gold.dim_customers`) integrating profiles, demographics, and geography.
 - [x] Build Product Dimension view (`gold.dim_products`) with category hierarchy and active catalog filter (`prd_end_dt IS NULL`).
 - [x] Build Central Fact Sales view (`gold.fact_sales`) referencing surrogate keys (`customer_key`, `product_key`) with order metrics.
 - [x] Author technical documentation and catalog (`docs/naming_convention.md`, `docs/data_catalog.md`).
+- [x] Create automated data quality validation suite (`tests/quality_checks_gold.sql`).
 
 ### Phase 6: Testing & Acceptance Criteria
 - [x] Uniqueness Test (verified 0 duplicate keys across all dimensions and composite fact grain).
