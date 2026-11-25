@@ -184,3 +184,12 @@ All 3 Gold presentation models have undergone automated validation via `tests/qu
 - [x] Sanity & Business Math Test (100% mathematical consistency on sales totals: Sales = Quantity × Price).
 - [x] Chronological Consistency Test (order date precedes shipping and delivery milestones; valid birthdates).
 - [x] Pipeline Idempotency Test (verified repeatable procedure executions with deterministic row counts).
+
+### Phase 7: Business Intelligence & Analytical Queries
+- [x] Task 7.1: Executive Sales Overview & KPIs (Total revenue, units sold, distinct orders, AOV, ASP).
+- [x] Task 7.2: Product Performance & Ranking (Top 10 and Bottom 10 products by revenue, category breakdown).
+- [x] Task 7.3: Customer Demographic Segmentation (Revenue and customer distribution by gender and age cohort).
+- [x] Task 7.4: Geographic Sales Analysis (Revenue, customer counts, and average spend per customer by country).
+- [x] Task 7.5: Product Hierarchy Contribution (Category and subcategory revenue breakdown with % share of category).
+- [x] Task 7.6: Time-Series & Month-over-Month (MoM) Growth (Monthly sales trends and MoM growth rate using window functions).
+
