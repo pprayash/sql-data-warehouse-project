@@ -82,7 +82,7 @@ How disparate CRM and ERP operational entities are cleansed and harmonized:
 
 The Gold presentation layer is organized into a centralized **Star Schema** optimized for BI consumption (Power BI, Tableau):
 
-![Star Schema Data Model](docs/diagrams/Data-Model.drawio.png)
+![Star Schema Data Model](docs/diagrams/Data-Model.jpg)
 
 ```mermaid
 erDiagram
@@ -151,31 +151,33 @@ A rigorous, multi-tiered quality assurance suite ensures zero defect propagation
 
 ```text
 data-warehouse-project-sql/
-├── datasets/                     # Source CSV extracts
-│   ├── source_crm/               # CRM source files (cust_info, prd_info, sales_details)
-│   └── source_erp/               # ERP source files (CUST_AZ12, LOC_A101, PX_CAT_G1V2)
-├── sql/                          # Database initialization & ETL pipelines
-│   ├── init_database.sql         # Database instance & schema creation
-│   ├── bronze/                   # Bronze ingestion layer
-│   │   ├── ddl_bronze.sql        # Raw table DDL
-│   │   └── proc_load_bronze.sql  # Automated bulk-load procedure
-│   ├── silver/                   # Silver transformation layer
-│   │   ├── ddl_silver.sql        # Cleansed table DDL
-│   │   └── proc_load_silver.sql  # Cleansing & transformation procedure
-│   └── gold/                     # Gold presentation layer
-│       └── ddl_gold.sql          # Star schema dimensional views
-├── tests/                        # Data quality test suites
-│   ├── quality_checks_silver.sql # Silver data cleansing & consistency assertions
-│   └── quality_checks_gold.sql   # Gold referential integrity & dimension tests
-└── docs/                         # Technical specifications & documentation
-    ├── project_plan.md           # Master project plan & execution milestones
-    ├── naming_convention.md      # Data warehouse naming & architecture standards
-    ├── data_catalog.md           # Gold layer data dictionary & KPI definitions
-    └── diagrams/                 # Architectural & data flow diagrams (Draw.io)
+├── datasets/                          # Source CSV extracts
+│   ├── source_crm/                    # CRM source files (cust_info, prd_info, sales_details)
+│   └── source_erp/                    # ERP source files (CUST_AZ12, LOC_A101, PX_CAT_G1V2)
+├── sql/                               # Database initialization, ETL & analytics scripts
+│   ├── init_database.sql              # Database instance & schema creation
+│   ├── bronze/                        # Bronze ingestion layer
+│   │   ├── ddl_bronze.sql             # Raw table DDL
+│   │   └── proc_load_bronze.sql       # Automated bulk-load procedure
+│   ├── silver/                        # Silver transformation layer
+│   │   ├── ddl_silver.sql             # Cleansed table DDL
+│   │   └── proc_load_silver.sql       # Cleansing & transformation procedure
+│   ├── gold/                          # Gold presentation layer
+│   │   └── ddl_gold.sql               # Star schema dimensional views
+│   └── analytics/                     # Business intelligence & reporting layer
+│       └── business_queries.sql       # Analytical KPI, cohort, ranking & growth queries
+├── tests/                             # Data quality test suites
+│   ├── quality_checks_silver.sql      # Silver data cleansing & consistency assertions
+│   └── quality_checks_gold.sql        # Gold referential integrity & dimension tests
+└── docs/                              # Technical specifications & documentation
+    ├── project_plan.md                # Master project plan & execution milestones
+    ├── naming_convention.md           # Data warehouse naming & architecture standards
+    ├── data_catalog.md                # Gold layer data dictionary & KPI definitions
+    └── diagrams/                      # Architectural & data flow diagrams (Draw.io)
         ├── High-level-Medallion-Architecture.jpg
         ├── Data-Flow.drawio.png
         ├── Data-Integration-Diagram.jpg
-        └── Data-Model.drawio.png
+        └── Data-Model.jpg
 ```
 
 ---
@@ -228,6 +230,12 @@ data-warehouse-project-sql/
    ```sql
    \i tests/quality_checks_silver.sql
    \i tests/quality_checks_gold.sql
+   ```
+
+7. **Run Business Intelligence & Analytical Queries:**
+   Execute the Gold layer reporting queries for executive KPIs, rankings, demographic cohorts, and growth trends:
+   ```sql
+   \i sql/analytics/business_queries.sql
    ```
 
 ---

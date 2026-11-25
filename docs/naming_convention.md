@@ -95,27 +95,33 @@ The repository enforces a structured directory hierarchy matching the pipeline f
 
 ```text
 data-warehouse-project-sql/
-├── datasets/                 # Raw source CSV extracts
-│   ├── source_crm/           # Operational CRM exports
-│   └── source_erp/           # Operational ERP exports
-├── sql/                      # All database DDL and stored procedures
-│   ├── init_database.sql     # Database instance & schema initialization
-│   ├── bronze/               # Bronze layer scripts
-│   │   ├── ddl_bronze.sql    # Table DDL
-│   │   └── proc_load_bronze.sql # Ingestion procedure
-│   ├── silver/               # Silver layer scripts
-│   │   ├── ddl_silver.sql    # Cleansed table DDL
-│   │   └── proc_load_silver.sql # Transformation procedure
-│   └── gold/                 # Gold layer scripts
-│       ├── ddl_gold.sql      # Star schema view definitions
-├── tests/                    # Data quality assertion suites
-│   ├── quality_checks_silver.sql # Silver integrity tests
-│   └── quality_checks_gold.sql   # Gold dimensional & reconciliation tests
-└── docs/                     # Technical specifications & documentation
-    ├── project_plan.md       # Master project plan & tracking
-    ├── naming_convention.md  # Naming standards & design rules
-    ├── data_catalog.md       # Gold layer data dictionary
-    └── diagrams/             # Draw.io architectural assets
+├── datasets/                      # Raw source CSV extracts
+│   ├── source_crm/                # Operational CRM exports
+│   └── source_erp/                # Operational ERP exports
+├── sql/                           # Database DDL, procedures, and analytical queries
+│   ├── init_database.sql          # Database instance & schema initialization
+│   ├── bronze/                    # Bronze layer scripts
+│   │   ├── ddl_bronze.sql         # Table DDL
+│   │   └── proc_load_bronze.sql   # Ingestion procedure
+│   ├── silver/                    # Silver layer scripts
+│   │   ├── ddl_silver.sql         # Cleansed table DDL
+│   │   └── proc_load_silver.sql   # Transformation procedure
+│   ├── gold/                      # Gold layer scripts
+│   │   └── ddl_gold.sql           # Star schema view definitions
+│   └── analytics/                 # Business intelligence & reporting layer
+│       └── business_queries.sql   # Analytical KPI, cohort, ranking & growth queries
+├── tests/                         # Data quality assertion suites
+│   ├── quality_checks_silver.sql  # Silver integrity tests
+│   └── quality_checks_gold.sql    # Gold dimensional & reconciliation tests
+└── docs/                          # Technical specifications & documentation
+    ├── project_plan.md            # Master project plan & tracking
+    ├── naming_convention.md       # Naming standards & design rules
+    ├── data_catalog.md            # Gold layer data dictionary
+    └── diagrams/                  # Architectural & data model diagrams
+        ├── High-level-Medallion-Architecture.jpg
+        ├── Data-Flow.drawio.png
+        ├── Data-Integration-Diagram.jpg
+        └── Data-Model.jpg
 ```
 
 ---
